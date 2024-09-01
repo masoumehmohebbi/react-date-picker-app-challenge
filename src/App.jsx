@@ -47,38 +47,40 @@ function App() {
   }
 
   // Functions For Calc Time-Diff
-  // function getDiff(start, end) {
-  //   let y, d, h, m, s;
 
   function getDiff(start, end) {
     let y, m, d, h, min, s;
+    let startDate = new DateObject({
+      date: start,
+      calendar: persian,
+    });
+    let endDate = new DateObject({
+      date: end,
+      calendar: persian,
+    });
 
-    // Calculate differences
     let diff = end - start;
     s = Math.floor(diff / 1000) % 60;
     min = Math.floor(diff / 1000 / 60) % 60;
     h = Math.floor(diff / 1000 / 60 / 60) % 24;
-    d = Math.floor(diff / 1000 / 60 / 60 / 24);
-    y = end.getFullYear() - start.getFullYear();
-    m = end.getMonth() - start.getMonth();
+    y = endDate.year - startDate.year;
+    m = endDate.month.index - startDate.month.index;
 
     if (m < 0) {
       y--;
       m += 12;
     }
-    if (y < 0) {
-      y = 0;
-    }
 
-    d = end.getDate() - start.getDate();
-
+    // Calculate day difference
+    d = endDate.day - startDate.day;
     if (d < 0) {
       m--;
-      let previousMonth = new Date(end.getFullYear(), end.getMonth(), 0);
-      d += previousMonth.getDate();
-    }
-    if (d > 0) {
-      d -= 2;
+      let previousMonthDays = startDate.subtract(1, "month").daysInMonth;
+      d += previousMonthDays;
+      if (m < 0) {
+        m += 12;
+        y--;
+      }
     }
 
     return {
