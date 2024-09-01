@@ -5,132 +5,95 @@ import { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import jalaali from "jalaali-js";
 import { motion } from "framer-motion";
-import * as shamsi from "shamsi-date-converter";
-import { FaBirthdayCake } from "react-icons/fa";
 import { SiLivewire } from "react-icons/si";
 import { BsPatchQuestionFill } from "react-icons/bs";
+import { FaBirthdayCake } from "react-icons/fa";
 
 function App() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
-  const [countdown, setCountdown] = useState("");
+  const [countdown, setCountdown] = useState(0);
 
-  // Take Date in Shemsi & convert to Gregorian
-  let userYear = date.year;
-  let userMonth = date.month;
-  let userDay = date.day;
-  let userMinutes = date.minute;
+  function calculateDiff(start, end) {
+    let monthDay = (n, y) =>
+      [
+        0,
+        31,
+        31,
+        31,
+        31,
+        31,
+        31,
+        30,
+        30,
+        30,
+        30,
+        30,
+        (y + 1) % 4 === 0 ? 30 : 29,
+      ][n];
 
-  const convertJaliliToGregorian = shamsi.jalaliToGregorian(
-    userYear,
-    userMonth,
-    userDay,
-    userMinutes
-  );
-
-  // Calculate the user's age
-  const today = new Date();
-  const todayPersian = jalaali.toJalaali(today);
-  const birthDate = new Date(date.year, date.month - 1, date.day);
-  // const birthDate = new Date(
-  //   convertJaliliToGregorian[0],
-  //   convertJaliliToGregorian[1] - 1,
-  //   convertJaliliToGregorian[2]
-  // );
-
-  let ageYear = todayPersian.jy - birthDate.getFullYear();
-  let ageMonth = todayPersian.jm - birthDate.getMonth();
-  let ageDay = todayPersian.jd - birthDate.getDate();
-  // let ageYear = today.getFullYear() - birthDate.getFullYear();
-  // let ageMonth = today.getMonth() - birthDate.getMonth();
-  // let ageDay = today.getDay() - birthDate.getDate();
-
-  // Correct the age if necessary
-  if (ageDay < 0) {
-    ageMonth--;
-    const daysInMonth = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      0
-    ).getDate();
-    ageDay += daysInMonth;
-  }
-  if (ageMonth < 0) {
-    ageYear--;
-    ageMonth += 12;
-  }
-
-  // Calculate the user birthday time left - MILADY & SHEMSI
-  useEffect(() => {
-    const calculateCountdown = () => {
-      // Gregorian calendar calculation
-      const currentYear = today.getFullYear();
-      const birthday = new Date(`${currentYear}-${date.month}-${date.day}`);
-
-      if (today > birthday) {
-        birthday.setFullYear(currentYear + 1);
+    let year, month, day;
+    if (end.year === start.year) {
+      if (end.month === start.month) {
+        month = 0;
+        day = end.day - start.day;
+      } else {
+        month = end.month - start.month;
+        if (end.day >= start.day) {
+          day = end.day - start.day;
+        } else {
+          month--;
+          day = monthDay(start.month, start.year) - start.day + end.day;
+        }
       }
+    } else {
+      month = (end.year - start.year) * 12 + end.month - start.month;
+      if (end.day >= start.day) {
+        day = end.day - start.day;
+      } else {
+        month--;
+        day = monthDay(start.month, start.year) - start.day + end.day;
+      }
+    }
 
-      const timeDiff = birthday - today;
-      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    year = end.year - start.year;
+    if (year < 0) year = 0;
 
-      setCountdown(
-        `${days} روز, ${hours} ساعت, ${minutes} دقیقه, ${seconds} ثانیه`
-      );
+    return [year, month, day];
+  }
 
-      // // Persian calendar calculation
-      // const currentPersianYear = todayPersian.jy;
-      // let persianBirthday = jalaali.toGregorian(
-      //   currentPersianYear,
-      //   date.month,
-      //   date.day
-      // );
-      // let nextBirthday = new Date(
-      //   persianBirthday.gy,
-      //   persianBirthday.gm - 1,
-      //   persianBirthday.gd
-      // );
+  function calculateAge() {
+    let now = new Date();
+    let {
+      jy: nowYear,
+      jm: nowMonth,
+      jd: nowDay,
+    } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-      // if (today > nextBirthday) {
-      //   const nextPersianYear = currentPersianYear + 1;
-      //   persianBirthday = jalaali.toGregorian(
-      //     nextPersianYear,
-      //     date.month,
-      //     date.day
-      //   );
-      //   nextBirthday = new Date(
-      //     persianBirthday.gy,
-      //     persianBirthday.gm - 1,
-      //     persianBirthday.gd
-      //   );
-      // }
+    return [
+      ...calculateDiff(
+        { year: date.year, month: date.month.number, day: date.day },
+        { year: nowYear, month: nowMonth, day: nowDay }
+      ),
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds(),
+    ];
+  }
+  let [ageYear, ageMonth, ageDay, ageHour, ageMinute, ageSecond] =
+    calculateAge();
 
-      // const persianTimeDiff = nextBirthday - today;
-      // const persianDays = Math.floor(persianTimeDiff / (1000 * 60 * 60 * 24));
-      // const persianHours = Math.floor(
-      //   (persianTimeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      // );
-      // const persianMinutes = Math.floor(
-      //   (persianTimeDiff % (1000 * 60 * 60)) / (1000 * 60)
-      // );
-      // const persianSeconds = Math.floor((persianTimeDiff % (1000 * 60)) / 1000);
+  let {
+    gy: gDateYear,
+    gm: gDateMonth,
+    gd: gDateDay,
+  } = jalaali.toGregorian(date.year, date.month.number, date.day);
 
-      // setCountdownShemsi(
-      //   `${persianDays} روز, ${persianHours} ساعت, ${persianMinutes} دقیقه, ${persianSeconds} ثانیه`
-      // );
-    };
-
-    calculateCountdown();
-    const interval = setInterval(calculateCountdown, 1000);
+  useEffect(() => {
+    let interval = setInterval(() => setCountdown(countdown + 1), 1000);
 
     return () => clearInterval(interval);
-  }, [date]);
+  }, [countdown]);
 
-  console.log(ageMonth);
   return (
     <div className="bg-purple-200 min-h-screen sm:pt-5 flex flex-col text-slate-800">
       <div className="flex-1 border border-purple-300 container sm:max-w-screen-sm mx-auto mb-5 bg-white p-6 rounded-md shadow-xl shadow-purple-400">
@@ -147,7 +110,8 @@ function App() {
           icon={<SiLivewire className="text-green-700 w-5 h-5" />}
         >
           <div>
-            {ageYear} سال | {ageMonth} ماه | {ageDay} روز | {userMinutes} ثانیه
+            {ageYear} سال {ageMonth} ماه {ageDay} روز {ageHour} ساعت {ageMinute}{" "}
+            دقیقه {ageSecond} ثانیه
           </div>
         </CalculateDate>
 
@@ -156,16 +120,14 @@ function App() {
           icon={<FaBirthdayCake className="text-pink-700 w-5 h-5" />}
         >
           <div>
-            {convertJaliliToGregorian[0]} / {convertJaliliToGregorian[1]} /
-            {convertJaliliToGregorian[2]} / {userMinutes}
+            {gDateYear}/{gDateMonth}/{gDateDay}
           </div>
         </CalculateDate>
 
-        <CalculateDate label="تا تولد بعدی چقدر مونده؟ (میلادی): " icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700"/>} >
-          <div dir="rtl">{countdown}</div>
-        </CalculateDate>
- 
-        <CalculateDate label="تا تولد بعدی چقدر مونده؟ (شمسی): " icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700"/>} >
+        <CalculateDate
+          label="تا تولد بعدی چقدر مونده؟ : "
+          icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700" />}
+        >
           <div dir="rtl">{countdown}</div>
         </CalculateDate>
       </div>
@@ -182,7 +144,7 @@ function CalculateDate({ label, children, icon }) {
       <motion.p
         whileHover={{
           scale: 1.1,
-          // boxShadow: "0px 0px 7px #fff7ed",
+          marginLeft: "0.5rem",
           transition: { delay: 0.2, type: "tween", duration: 0.3 },
         }}
         className="font-bold flex items-center gap-x-2 justify-center"
