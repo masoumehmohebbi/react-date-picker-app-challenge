@@ -50,42 +50,15 @@ function App() {
   // function getDiff(start, end) {
   //   let y, d, h, m, s;
 
-  //   // Calc in milliseconds
-  //   let diff = Math.floor((end.getTime() - start.getTime()) / 1000);
-  //   s = diff % 60;
-  //   diff = Math.floor(diff / 60);
-  //   m = diff % 60;
-  //   diff = Math.floor(diff / 60);
-  //   h = diff % 24;
-  //   diff = Math.floor(diff / 24);
-  //   d = diff % 365;
-  //   y = Math.floor(diff / 365);
-
-  //   return {
-  //     year: y,
-  //     month: m,
-  //     day: d,
-  //     hour: h,
-  //     minute: m,
-  //     second: s,
-  //   };
-  // }
   function getDiff(start, end) {
     let y, m, d, h, min, s;
 
     // Calculate differences
     let diff = end - start;
-
-    // Calculate in seconds
     s = Math.floor(diff / 1000) % 60;
-    // Calculate in minutes
     min = Math.floor(diff / 1000 / 60) % 60;
-    // Calculate in hours
     h = Math.floor(diff / 1000 / 60 / 60) % 24;
-    // Calculate in days
     d = Math.floor(diff / 1000 / 60 / 60 / 24);
-
-    // Calculate in years and months
     y = end.getFullYear() - start.getFullYear();
     m = end.getMonth() - start.getMonth();
 
@@ -93,14 +66,19 @@ function App() {
       y--;
       m += 12;
     }
+    if (y < 0) {
+      y = 0;
+    }
 
-    // If the day in the current month hasn't been reached yet
-    if (end.getDate() < start.getDate()) {
+    d = end.getDate() - start.getDate();
+
+    if (d < 0) {
       m--;
       let previousMonth = new Date(end.getFullYear(), end.getMonth(), 0);
-      d = previousMonth.getDate() - start.getDate() + end.getDate();
-    } else {
-      d = end.getDate() - start.getDate();
+      d += previousMonth.getDate();
+    }
+    if (d > 0) {
+      d -= 2;
     }
 
     return {
