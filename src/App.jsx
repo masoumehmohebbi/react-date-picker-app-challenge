@@ -13,80 +13,54 @@ function App() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
   const [countdown, setCountdown] = useState(0);
 
-  function calculateDiff(start, end) {
-    let monthDay = (n, y) =>
-      [
-        0,
-        31,
-        31,
-        31,
-        31,
-        31,
-        31,
-        30,
-        30,
-        30,
-        30,
-        30,
-        (y + 1) % 4 === 0 ? 30 : 29,
-      ][n];
-
-    let year, month, day;
-    if (end.year === start.year) {
-      if (end.month === start.month) {
-        month = 0;
-        day = end.day - start.day;
-      } else {
-        month = end.month - start.month;
-        if (end.day >= start.day) {
-          day = end.day - start.day;
-        } else {
-          month--;
-          day = monthDay(start.month, start.year) - start.day + end.day;
-        }
-      }
-    } else {
-      month = (end.year - start.year) * 12 + end.month - start.month;
-      if (end.day >= start.day) {
-        day = end.day - start.day;
-      } else {
-        month--;
-        day = monthDay(start.month, start.year) - start.day + end.day;
-      }
-    }
-
-    year = end.year - start.year;
-    if (year < 0) year = 0;
-
-    return [year, month, day];
-  }
-
-  function calculateAge() {
-    let now = new Date();
-    let {
-      jy: nowYear,
-      jm: nowMonth,
-      jd: nowDay,
-    } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
-
-    return [
-      ...calculateDiff(
-        { year: date.year, month: date.month.number, day: date.day },
-        { year: nowYear, month: nowMonth, day: nowDay }
-      ),
-      now.getHours(),
-      now.getMinutes(),
-      now.getSeconds(),
-    ];
-  }
-  let [ageYear, ageMonth, ageDay, ageHour, ageMinute, ageSecond] =
-    calculateAge();
-
   let {
     gy: gDateYear,
     gm: gDateMonth,
     gd: gDateDay,
   } = jalaali.toGregorian(date.year, date.month.number, date.day);
+
+  let now = new Date();
+  let birth = new Date(`${gDateYear}-${gDateMonth}-${gDateDay} 00:00:00`);
+  let {
+    jy: nowYear,
+    jm: nowMonth,
+    jd: nowDay,
+  } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  let nextBirth = new Date(
+    `${
+      now.getFullYear() +
+      !(
+        nowMonth < date.month.number ||
+        (nowMonth === date.month.number && nowDay < date.day)
+      )
+    }-${gDateMonth}-${gDateDay}`
+  );
+
+  // Functions
+  function getDiff(start, end) {
+    let y, d, h, m, s;
+    let diff = Math.floor((end.getTime() - start.getTime()) / 1000);
+    s = diff % 60;
+    diff = Math.floor(diff / 60);
+    m = diff % 60;
+    diff = Math.floor(diff / 60);
+    h = diff % 24;
+    diff = Math.floor(diff / 24);
+    d = diff % 365;
+    y = Math.floor(diff / 365);
+
+    return {
+      year: y,
+      day: d,
+      hour: h,
+      minute: m,
+      second: s,
+    };
+  }
+
+  let age = getDiff(birth, now);
+
+  let next = getDiff(now, nextBirth);
 
   useEffect(() => {
     let interval = setInterval(() => setCountdown(countdown + 1), 1000);
@@ -110,8 +84,8 @@ function App() {
           icon={<SiLivewire className="text-green-700 w-5 h-5" />}
         >
           <div>
-            {ageYear} سال {ageMonth} ماه {ageDay} روز {ageHour} ساعت {ageMinute}{" "}
-            دقیقه {ageSecond} ثانیه
+            {age.year} سال {age.day} روز {age.hour} ساعت {age.minute} دقیقه{" "}
+            {age.second} ثانیه
           </div>
         </CalculateDate>
 
@@ -128,7 +102,11 @@ function App() {
           label="تا تولد بعدی چقدر مونده؟ : "
           icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700" />}
         >
-          <div dir="rtl">{countdown}</div>
+          <div dir="rtl">
+            {/* {countdown} */}
+            {next.day} روز {next.hour} ساعت {next.minute} دقیقه {next.second}{" "}
+            ثانیه
+          </div>
         </CalculateDate>
       </div>
       <Footer />
