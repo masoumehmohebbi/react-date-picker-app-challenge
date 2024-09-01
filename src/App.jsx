@@ -23,23 +23,6 @@ function App() {
   // Get current date and birthday in Gregorian-format
   let now = new Date();
   let birth = new Date(`${gDateYear}-${gDateMonth}-${gDateDay} 00:00:00`);
-  // let {
-  //   jy: nowYear,
-  //   jm: nowMonth,
-  //   jd: nowDay,
-  // } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
-
-  // Calc next birthday date
-  // let nextBirth = new Date(
-  //   `${
-  //     now.getFullYear() +
-  //     !(
-  //       nowMonth < date.month.number ||
-  //       (nowMonth === date.month.number && nowDay < date.day)
-  //     )
-  //   }-${gDateMonth}-${gDateDay}`
-  // );
-
   let nextBirth = new Date(now.getFullYear(), gDateMonth - 1, gDateDay);
 
   if (nextBirth < now) {
@@ -47,7 +30,6 @@ function App() {
   }
 
   // Functions For Calc Time-Diff
-
   function getDiff(start, end) {
     let y, m, d, h, min, s;
     let startDate = new DateObject({
@@ -59,28 +41,35 @@ function App() {
       calendar: persian,
     });
 
+    // Calculate differences in time
     let diff = end - start;
     s = Math.floor(diff / 1000) % 60;
     min = Math.floor(diff / 1000 / 60) % 60;
     h = Math.floor(diff / 1000 / 60 / 60) % 24;
+
     y = endDate.year - startDate.year;
     m = endDate.month.index - startDate.month.index;
+    d = endDate.day - startDate.day;
+    if (d < 0) {
+      m--;
+      let previousMonthDays;
+      if (endDate.month.index === 0) {
+        previousMonthDays = 31;
+      } else if (endDate.month.index <= 5) {
+        previousMonthDays = 31;
+      } else {
+        previousMonthDays = 30;
+      }
+      d += previousMonthDays;
+    }
 
     if (m < 0) {
       y--;
       m += 12;
     }
 
-    // Calculate day difference
-    d = endDate.day - startDate.day;
-    if (d < 0) {
-      m--;
-      let previousMonthDays = startDate.subtract(1, "month").daysInMonth;
-      d += previousMonthDays;
-      if (m < 0) {
-        m += 12;
-        y--;
-      }
+    if (y < 0) {
+      y = 0;
     }
 
     return {
