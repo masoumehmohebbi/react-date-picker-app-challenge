@@ -11,31 +11,27 @@ function App() {
   const [countdown, setCountdown] = useState("");
   const [countdownShemsi, setCountdownShemsi] = useState("");
 
+  console.log(date);
+
   // Take Date in Shemsi & convert to Gregorian
   let userYear = date.year;
   let userMonth = date.month;
   let userDay = date.day;
+  let userMinutes = date.minute;
   const convertJaliliToGregorian = shamsi.jalaliToGregorian(
     userYear,
     userMonth,
-    userDay
+    userDay,
+    userMinutes
   );
+
+  const today = new Date();
 
   // Calculate the user's age
-  const today = new Date();
-  const birthd = new Date(
-    `${today.getFullYear()}-${convertJaliliToGregorian[1]}-${
-      convertJaliliToGregorian[2]
-    }`
-  );
-  let realDiff = birthd - today;
-
-  console.log(realDiff / 1000);
 
   const todayPersian = jalaali.toJalaali(today);
   const birthDate = new Date(date.year, date.month - 1, date.day);
 
-  // let ageYear = today.getFullYear() - birthDate.getFullYear();
   let ageYear = todayPersian.jy - birthDate.getFullYear();
   let ageMonth = todayPersian.jm - birthDate.getMonth();
   let ageDay = todayPersian.jd - birthDate.getDate();
@@ -145,7 +141,8 @@ function App() {
 
         <CalculateDate label="تاریخ تولد کاربر به میلادی: ">
           <div>
-            {date.jy} / {todayPersian.jm} / {todayPersian.jd}
+            {convertJaliliToGregorian[0]} / {convertJaliliToGregorian[1]} /
+            {convertJaliliToGregorian[2]} / {userMinutes}
           </div>
         </CalculateDate>
 
@@ -154,7 +151,7 @@ function App() {
         </CalculateDate>
 
         <CalculateDate label="تا تولد بعدی چقدر مونده؟ (شمسی): ">
-          <div dir="rtl">{countdownShemsi}</div>
+          <div dir="rtl">{countdown}</div>
         </CalculateDate>
       </div>
       <Footer />
@@ -166,11 +163,11 @@ export default App;
 
 function CalculateDate({ label, children }) {
   return (
-    <div className="flex gap-x-3 mt-11 border-b-2 pb-3">
+    <div className="flex gap-x-3 mt-11 pb-3 bg-pink-300 px-5 py-4 rounded-md shadow-lg">
       <motion.p
         whileHover={{
           scale: 1.1,
-          boxShadow: "0px 0px 7px #fff7ed",
+          // boxShadow: "0px 0px 7px #fff7ed",
           transition: { delay: 0.2, type: "tween", duration: 0.3 },
         }}
         className="font-bold"
