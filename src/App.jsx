@@ -13,12 +13,14 @@ function App() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
   const [countdown, setCountdown] = useState(0);
 
+  // Convert Shamsi-date to Gregorian
   let {
     gy: gDateYear,
     gm: gDateMonth,
     gd: gDateDay,
   } = jalaali.toGregorian(date.year, date.month.number, date.day);
 
+  // Get current date and birthday in Gregorian-format
   let now = new Date();
   let birth = new Date(`${gDateYear}-${gDateMonth}-${gDateDay} 00:00:00`);
   let {
@@ -26,6 +28,8 @@ function App() {
     jm: nowMonth,
     jd: nowDay,
   } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
+  // Calc next birthday date
   let nextBirth = new Date(
     `${
       now.getFullYear() +
@@ -36,9 +40,11 @@ function App() {
     }-${gDateMonth}-${gDateDay}`
   );
 
-  // Functions
+  // Functions For Calc Time-Diff
   function getDiff(start, end) {
     let y, d, h, m, s;
+
+    // Calc in milliseconds
     let diff = Math.floor((end.getTime() - start.getTime()) / 1000);
     s = diff % 60;
     diff = Math.floor(diff / 60);
@@ -58,10 +64,13 @@ function App() {
     };
   }
 
+  // User Age
   let age = getDiff(birth, now);
 
+  // Days left to user Birthday
   let next = getDiff(now, nextBirth);
 
+  // Updating countdown
   useEffect(() => {
     let interval = setInterval(() => setCountdown(countdown + 1), 1000);
 
