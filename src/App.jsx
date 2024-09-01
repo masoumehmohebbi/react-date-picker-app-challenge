@@ -22,7 +22,7 @@ function App() {
   let now = new Date();
   let birth = new Date(`${gDateYear}-${gDateMonth}-${gDateDay} 00:00:00`);
   let {
-    jy: nowYear,
+    // jy: nowYear,
     jm: nowMonth,
     jd: nowDay,
   } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
