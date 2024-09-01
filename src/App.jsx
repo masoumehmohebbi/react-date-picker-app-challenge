@@ -6,6 +6,7 @@ import persian from "react-date-object/calendars/persian";
 import jalaali from "jalaali-js";
 import { motion } from "framer-motion";
 import * as shamsi from "shamsi-date-converter";
+
 function App() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
   const [countdown, setCountdown] = useState("");
@@ -124,12 +125,12 @@ function App() {
 
   return (
     <div className="bg-purple-200 min-h-screen sm:pt-5 flex flex-col text-slate-800">
-      <div className="flex-1 border border-purple-300 container sm:max-w-screen-sm mx-auto mb-5 bg-white p-5 rounded-md shadow-xl shadow-purple-400">
+      <div className="flex-1 border border-purple-300 container sm:max-w-screen-sm mx-auto mb-5 bg-white p-6 rounded-md shadow-xl shadow-purple-400">
         <div className="flex justify-center items-center">
           <DatePickerField
             date={date}
             setDate={setDate}
-            label="تاریخ تولد خود را انتخاب کنید :)"
+            label=" تاریخ تولد خود را انتخاب کنید :)"
           />
         </div>
 
@@ -163,7 +164,7 @@ export default App;
 
 function CalculateDate({ label, children }) {
   return (
-    <div className="flex gap-x-3 mt-11 pb-3 bg-pink-300 px-5 py-4 rounded-md shadow-lg">
+    <div className="flex gap-x-3 mt-11 hover:scale-105 pb-3 hover:bg-pink-400 hover:ring-pink-400 transition duration-500 bg-pink-300 px-5 py-4 rounded-md shadow-xl ring-offset-1 ring ring-pink-300">
       <motion.p
         whileHover={{
           scale: 1.1,
