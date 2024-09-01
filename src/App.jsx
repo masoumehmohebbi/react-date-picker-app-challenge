@@ -6,6 +6,9 @@ import persian from "react-date-object/calendars/persian";
 import jalaali from "jalaali-js";
 import { motion } from "framer-motion";
 import * as shamsi from "shamsi-date-converter";
+import { FaBirthdayCake } from "react-icons/fa";
+import { SiLivewire } from "react-icons/si";
+import { BsPatchQuestionFill } from "react-icons/bs";
 
 function App() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
@@ -139,24 +142,30 @@ function App() {
           />
         </div>
 
-        <CalculateDate label="سن شما: ">
+        <CalculateDate
+          label="سن شما: "
+          icon={<SiLivewire className="text-green-700 w-5 h-5" />}
+        >
           <div>
-            {ageYear} سال {ageMonth} ماه {ageDay} روز {userMinutes} ثانیه
+            {ageYear} سال | {ageMonth} ماه | {ageDay} روز | {userMinutes} ثانیه
           </div>
         </CalculateDate>
 
-        <CalculateDate label="تاریخ تولد کاربر به میلادی: ">
+        <CalculateDate
+          label="تاریخ تولد کاربر به میلادی: "
+          icon={<FaBirthdayCake className="text-pink-700 w-5 h-5" />}
+        >
           <div>
             {convertJaliliToGregorian[0]} / {convertJaliliToGregorian[1]} /
             {convertJaliliToGregorian[2]} / {userMinutes}
           </div>
         </CalculateDate>
 
-        <CalculateDate label="تا تولد بعدی چقدر مونده؟ (میلادی): ">
+        <CalculateDate label="تا تولد بعدی چقدر مونده؟ (میلادی): " icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700"/>} >
           <div dir="rtl">{countdown}</div>
         </CalculateDate>
-
-        <CalculateDate label="تا تولد بعدی چقدر مونده؟ (شمسی): ">
+ 
+        <CalculateDate label="تا تولد بعدی چقدر مونده؟ (شمسی): " icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700"/>} >
           <div dir="rtl">{countdown}</div>
         </CalculateDate>
       </div>
@@ -167,7 +176,7 @@ function App() {
 
 export default App;
 
-function CalculateDate({ label, children }) {
+function CalculateDate({ label, children, icon }) {
   return (
     <div className="flex gap-x-3 mt-11 hover:scale-105 pb-3 hover:bg-pink-400 hover:ring-pink-400 transition duration-500 bg-pink-300 px-5 py-4 rounded-md shadow-xl ring-offset-1 ring ring-pink-300">
       <motion.p
@@ -176,8 +185,9 @@ function CalculateDate({ label, children }) {
           // boxShadow: "0px 0px 7px #fff7ed",
           transition: { delay: 0.2, type: "tween", duration: 0.3 },
         }}
-        className="font-bold"
+        className="font-bold flex items-center gap-x-2 justify-center"
       >
+        {icon}
         {label}
       </motion.p>
       {children}

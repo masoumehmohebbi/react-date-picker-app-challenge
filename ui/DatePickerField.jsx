@@ -13,7 +13,7 @@ const DatePickerField = ({ label, date, setDate }) => {
         transition={{ duration: 1, type: "spring", stiffness: 120 }}
         className="mb-4  text-slate-700 font-black text-xl pb-5 flex items-center gap-x-2"
       >
-        <MdDateRange className="w-7 h-7 text-gray-700" />
+        <MdDateRange className="w-7 h-7 text-pink-700" />
         {label}
       </motion.h1>
 
