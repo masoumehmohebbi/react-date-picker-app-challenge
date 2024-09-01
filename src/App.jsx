@@ -10,15 +10,13 @@ import * as shamsi from "shamsi-date-converter";
 function App() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
   const [countdown, setCountdown] = useState("");
-  const [countdownShemsi, setCountdownShemsi] = useState("");
-
-  console.log(date);
 
   // Take Date in Shemsi & convert to Gregorian
   let userYear = date.year;
   let userMonth = date.month;
   let userDay = date.day;
   let userMinutes = date.minute;
+
   const convertJaliliToGregorian = shamsi.jalaliToGregorian(
     userYear,
     userMonth,
@@ -26,16 +24,22 @@ function App() {
     userMinutes
   );
 
-  const today = new Date();
-
   // Calculate the user's age
-
+  const today = new Date();
   const todayPersian = jalaali.toJalaali(today);
   const birthDate = new Date(date.year, date.month - 1, date.day);
+  // const birthDate = new Date(
+  //   convertJaliliToGregorian[0],
+  //   convertJaliliToGregorian[1] - 1,
+  //   convertJaliliToGregorian[2]
+  // );
 
   let ageYear = todayPersian.jy - birthDate.getFullYear();
   let ageMonth = todayPersian.jm - birthDate.getMonth();
   let ageDay = todayPersian.jd - birthDate.getDate();
+  // let ageYear = today.getFullYear() - birthDate.getFullYear();
+  // let ageMonth = today.getMonth() - birthDate.getMonth();
+  // let ageDay = today.getDay() - birthDate.getDate();
 
   // Correct the age if necessary
   if (ageDay < 0) {
@@ -75,46 +79,46 @@ function App() {
         `${days} روز, ${hours} ساعت, ${minutes} دقیقه, ${seconds} ثانیه`
       );
 
-      // Persian calendar calculation
-      const currentPersianYear = todayPersian.jy;
-      let persianBirthday = jalaali.toGregorian(
-        currentPersianYear,
-        date.month,
-        date.day
-      );
-      let nextBirthday = new Date(
-        persianBirthday.gy,
-        persianBirthday.gm - 1,
-        persianBirthday.gd
-      );
+      // // Persian calendar calculation
+      // const currentPersianYear = todayPersian.jy;
+      // let persianBirthday = jalaali.toGregorian(
+      //   currentPersianYear,
+      //   date.month,
+      //   date.day
+      // );
+      // let nextBirthday = new Date(
+      //   persianBirthday.gy,
+      //   persianBirthday.gm - 1,
+      //   persianBirthday.gd
+      // );
 
-      if (today > nextBirthday) {
-        const nextPersianYear = currentPersianYear + 1;
-        persianBirthday = jalaali.toGregorian(
-          nextPersianYear,
-          date.month,
-          date.day
-        );
-        nextBirthday = new Date(
-          persianBirthday.gy,
-          persianBirthday.gm - 1,
-          persianBirthday.gd
-        );
-      }
+      // if (today > nextBirthday) {
+      //   const nextPersianYear = currentPersianYear + 1;
+      //   persianBirthday = jalaali.toGregorian(
+      //     nextPersianYear,
+      //     date.month,
+      //     date.day
+      //   );
+      //   nextBirthday = new Date(
+      //     persianBirthday.gy,
+      //     persianBirthday.gm - 1,
+      //     persianBirthday.gd
+      //   );
+      // }
 
-      const persianTimeDiff = nextBirthday - today;
-      const persianDays = Math.floor(persianTimeDiff / (1000 * 60 * 60 * 24));
-      const persianHours = Math.floor(
-        (persianTimeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const persianMinutes = Math.floor(
-        (persianTimeDiff % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      const persianSeconds = Math.floor((persianTimeDiff % (1000 * 60)) / 1000);
+      // const persianTimeDiff = nextBirthday - today;
+      // const persianDays = Math.floor(persianTimeDiff / (1000 * 60 * 60 * 24));
+      // const persianHours = Math.floor(
+      //   (persianTimeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      // );
+      // const persianMinutes = Math.floor(
+      //   (persianTimeDiff % (1000 * 60 * 60)) / (1000 * 60)
+      // );
+      // const persianSeconds = Math.floor((persianTimeDiff % (1000 * 60)) / 1000);
 
-      setCountdownShemsi(
-        `${persianDays} روز, ${persianHours} ساعت, ${persianMinutes} دقیقه, ${persianSeconds} ثانیه`
-      );
+      // setCountdownShemsi(
+      //   `${persianDays} روز, ${persianHours} ساعت, ${persianMinutes} دقیقه, ${persianSeconds} ثانیه`
+      // );
     };
 
     calculateCountdown();
@@ -123,6 +127,7 @@ function App() {
     return () => clearInterval(interval);
   }, [date]);
 
+  console.log(ageMonth);
   return (
     <div className="bg-purple-200 min-h-screen sm:pt-5 flex flex-col text-slate-800">
       <div className="flex-1 border border-purple-300 container sm:max-w-screen-sm mx-auto mb-5 bg-white p-6 rounded-md shadow-xl shadow-purple-400">
@@ -136,7 +141,7 @@ function App() {
 
         <CalculateDate label="سن شما: ">
           <div>
-            {ageYear} سال {ageMonth} ماه {ageDay} روز
+            {ageYear} سال {ageMonth} ماه {ageDay} روز {userMinutes} ثانیه
           </div>
         </CalculateDate>
 
