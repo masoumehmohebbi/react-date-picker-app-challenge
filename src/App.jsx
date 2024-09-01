@@ -23,43 +23,92 @@ function App() {
   // Get current date and birthday in Gregorian-format
   let now = new Date();
   let birth = new Date(`${gDateYear}-${gDateMonth}-${gDateDay} 00:00:00`);
-  let {
-    // jy: nowYear,
-    jm: nowMonth,
-    jd: nowDay,
-  } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  // let {
+  //   jy: nowYear,
+  //   jm: nowMonth,
+  //   jd: nowDay,
+  // } = jalaali.toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
   // Calc next birthday date
-  let nextBirth = new Date(
-    `${
-      now.getFullYear() +
-      !(
-        nowMonth < date.month.number ||
-        (nowMonth === date.month.number && nowDay < date.day)
-      )
-    }-${gDateMonth}-${gDateDay}`
-  );
+  // let nextBirth = new Date(
+  //   `${
+  //     now.getFullYear() +
+  //     !(
+  //       nowMonth < date.month.number ||
+  //       (nowMonth === date.month.number && nowDay < date.day)
+  //     )
+  //   }-${gDateMonth}-${gDateDay}`
+  // );
+
+  let nextBirth = new Date(now.getFullYear(), gDateMonth - 1, gDateDay);
+
+  if (nextBirth < now) {
+    nextBirth.setFullYear(nextBirth.getFullYear() + 1);
+  }
 
   // Functions For Calc Time-Diff
-  function getDiff(start, end) {
-    let y, d, h, m, s;
+  // function getDiff(start, end) {
+  //   let y, d, h, m, s;
 
-    // Calc in milliseconds
-    let diff = Math.floor((end.getTime() - start.getTime()) / 1000);
-    s = diff % 60;
-    diff = Math.floor(diff / 60);
-    m = diff % 60;
-    diff = Math.floor(diff / 60);
-    h = diff % 24;
-    diff = Math.floor(diff / 24);
-    d = diff % 365;
-    y = Math.floor(diff / 365);
+  //   // Calc in milliseconds
+  //   let diff = Math.floor((end.getTime() - start.getTime()) / 1000);
+  //   s = diff % 60;
+  //   diff = Math.floor(diff / 60);
+  //   m = diff % 60;
+  //   diff = Math.floor(diff / 60);
+  //   h = diff % 24;
+  //   diff = Math.floor(diff / 24);
+  //   d = diff % 365;
+  //   y = Math.floor(diff / 365);
+
+  //   return {
+  //     year: y,
+  //     month: m,
+  //     day: d,
+  //     hour: h,
+  //     minute: m,
+  //     second: s,
+  //   };
+  // }
+  function getDiff(start, end) {
+    let y, m, d, h, min, s;
+
+    // Calculate differences
+    let diff = end - start;
+
+    // Calculate in seconds
+    s = Math.floor(diff / 1000) % 60;
+    // Calculate in minutes
+    min = Math.floor(diff / 1000 / 60) % 60;
+    // Calculate in hours
+    h = Math.floor(diff / 1000 / 60 / 60) % 24;
+    // Calculate in days
+    d = Math.floor(diff / 1000 / 60 / 60 / 24);
+
+    // Calculate in years and months
+    y = end.getFullYear() - start.getFullYear();
+    m = end.getMonth() - start.getMonth();
+
+    if (m < 0) {
+      y--;
+      m += 12;
+    }
+
+    // If the day in the current month hasn't been reached yet
+    if (end.getDate() < start.getDate()) {
+      m--;
+      let previousMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+      d = previousMonth.getDate() - start.getDate() + end.getDate();
+    } else {
+      d = end.getDate() - start.getDate();
+    }
 
     return {
       year: y,
+      month: m,
       day: d,
       hour: h,
-      minute: m,
+      minute: min,
       second: s,
     };
   }
@@ -93,8 +142,8 @@ function App() {
           icon={<SiLivewire className="text-green-700 w-5 h-5" />}
         >
           <div>
-            {age.year} سال {age.day} روز {age.hour} ساعت {age.minute} دقیقه{" "}
-            {age.second} ثانیه
+            {age.year} سال {age.month} ماه {age.day} روز {age.hour} ساعت{" "}
+            {age.minute} دقیقه {age.second} ثانیه
           </div>
         </CalculateDate>
 
@@ -112,8 +161,7 @@ function App() {
           icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700" />}
         >
           <div dir="rtl">
-            {/* {countdown} */}
-            {next.day} روز {next.hour} ساعت {next.minute} دقیقه {next.second}{" "}
+            {next.day} روز {next.hour} ساعت {next.minute} دقیقه {next.second}
             ثانیه
           </div>
         </CalculateDate>
