@@ -66,12 +66,12 @@ function DatePickerContainer() {
   return (
     <div className="min-h-[81vh] bg-[#f1f5f9]">
       <div className="sm:pt-5 flex flex-col text-slate-800">
-        <div className="flex-1 border border-primary-300 container sm:max-w-screen-sm mb-5 bg-white p-6 rounded-md shadow-xl shadow-primary-400">
+        <div className="flex-1 mt-11 border border-primary-300 container sm:max-w-screen-sm mb-5 bg-white p-6 rounded-md shadow-xl shadow-primary-400">
           <div className="flex justify-center items-center">
             <DatePickerField
               date={date}
               setDate={setDate}
-              label=" تاریخ تولد خود را انتخاب کنید :)"
+              label="انتخاب تاریخ تولد"
             />
           </div>
 
