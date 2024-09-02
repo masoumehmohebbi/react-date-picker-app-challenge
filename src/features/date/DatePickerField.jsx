@@ -6,7 +6,7 @@ import persian_fa from "react-date-object/locales/persian_fa";
 const DatePickerField = ({ label, date, setDate }) => {
   const maxDate = new DateObject({ date: new Date(), calendar: persian });
   return (
-    <div className="flex items-center justify-center gap-x-5 mb-11">
+    <div className="flex items-center justify-center gap-x-5 mb-16">
       <motion.h1
         initial={{ x: "70px" }}
         animate={{ x: "0" }}

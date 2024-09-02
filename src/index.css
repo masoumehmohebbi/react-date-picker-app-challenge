@@ -70,3 +70,28 @@
     @apply border border-rose-700 text-rose-700;
   }
 }
+
+/* ----------------------------- style scrollbar ---------------------------- */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--color-primary-900))
+    rgba(var(--color-secondary-700));
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgb(var(--color-primary-600));
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--color-primary-600));
+  border-radius: 14px;
+  border: 3px solid rgb(var(--color-primary-600));
+}

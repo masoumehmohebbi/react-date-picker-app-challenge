@@ -67,7 +67,7 @@ function DatePickerContainer() {
   return (
     <div className="min-h-[81vh] bg-[#f1f5f9]">
       <div className="sm:pt-5 flex flex-col text-slate-800">
-        <div className="flex-1 mt-11 border border-primary-300 container sm:max-w-screen-sm mb-5 bg-secondary-0 p-6 rounded-md shadow-xl shadow-primary-400">
+        <div className="flex-1 mt-11 border border-primary-300 container sm:max-w-screen-sm mb-5 bg-secondary-0 p-11 rounded-2xl shadow-xl shadow-primary-400">
           <div className="flex justify-center items-center">
             <DatePickerField
               date={date}
@@ -77,7 +77,7 @@ function DatePickerContainer() {
           </div>
 
           <button
-            className="btn btn--primary text-base w-full flex items-center justify-center gap-x-1"
+            className="btn btn--primary text-[17px] w-full flex items-center justify-center gap-x-1"
             onClick={() => setOpen(true)}
           >
             <MdOutlineCalculate className="w-6 h-6" />
