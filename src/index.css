@@ -37,6 +37,7 @@
       --color-red-300: 252, 165, 165;
     }
     &.dark-mode {
+      --color-primary-400: 75, 88, 141;
       --color-primary-300: 107, 131, 232;
       --color-secondary-900: 249, 250, 251;
       --color-secondary-800: 243, 244, 246;
@@ -70,6 +71,23 @@
   .btn--danger {
     @apply border border-rose-700 text-rose-700;
   }
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Vazir";
+  min-height: 100vh;
+  user-select: none;
+}
+
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  /* border: none; */
+  outline: none;
+  padding: 0;
+  margin: 0;
 }
 
 /* ----------------------------- style scrollbar ---------------------------- */
