@@ -5,9 +5,9 @@ const DarkModeToggle = () => {
   return (
     <button onClick={toggleDarkMode}>
       {isDarkMode ? (
-        <HiOutlineSun className="w-7 h-7 text-primary-900" />
+        <HiOutlineSun className="w-8 h-8 text-primary-900" />
       ) : (
-        <HiOutlineMoon className="w-7 h-7 text-primary-900" />
+        <HiOutlineMoon className="w-8 h-8 text-primary-900" />
       )}
     </button>
   );

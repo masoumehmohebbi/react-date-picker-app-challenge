@@ -37,6 +37,7 @@
       --color-red-300: 252, 165, 165;
     }
     &.dark-mode {
+      --color-primary-300: 107, 131, 232;
       --color-secondary-900: 249, 250, 251;
       --color-secondary-800: 243, 244, 246;
       --color-secondary-700: 229, 231, 235;
