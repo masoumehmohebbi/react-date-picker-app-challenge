@@ -10,6 +10,7 @@ import CalculateDate from "./CalculateDate";
 import DatePickerField from "./DatePickerField";
 import Modal from "../../ui/Modal";
 import { MdOutlineCalculate } from "react-icons/md";
+import getDaysInPersianMonth from "../../utils/getDaysInPersianMonth";
 
 function DatePickerContainer() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
@@ -144,14 +145,3 @@ function DatePickerContainer() {
 }
 
 export default DatePickerContainer;
-
-// Utility function to get the number of days in a Persian month
-function getDaysInPersianMonth(month, year) {
-  // Handle leap year logic for the last month (Esfand)
-  if (month === 12) {
-    return jalaali.isLeapJalaaliYear(year) ? 30 : 29;
-  }
-
-  // First 6 months have 31 days, the rest have 30 days
-  return month <= 6 ? 31 : 30;
-}
