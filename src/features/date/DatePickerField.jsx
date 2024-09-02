@@ -11,13 +11,13 @@ const DatePickerField = ({ label, date, setDate }) => {
         initial={{ x: "70px" }}
         animate={{ x: "0" }}
         transition={{ duration: 1, type: "spring", stiffness: 120 }}
-        className="text-slate-700 font-black text-base flex items-center gap-x-2"
+        className="text-secondary-800 font-black text-base flex items-center gap-x-2"
       >
         {label}
       </motion.h1>
 
       <DatePicker
-        containerClassName=" group bg-primary-200 hover:bg-primary-300 border border-primary-400 ring-2 ring-primary-500 ring-offset-2 rounded-md shadow-xl py-1 cursor-pointer pr-28"
+        containerClassName="text-slate-800 group bg-primary-200 hover:bg-primary-300 border border-primary-400 ring-2 ring-primary-500 ring-offset-2 rounded-md shadow-xl py-1 cursor-pointer pr-28"
         inputClass="textField__input bg-primary-200 group-hover:bg-primary-300 text-lg"
         calenderPosition="bottom-center"
         value={date}

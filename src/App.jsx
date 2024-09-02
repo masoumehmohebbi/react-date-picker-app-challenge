@@ -1,11 +1,14 @@
+import { DarkModeProvier } from "./context/DarkModeContext";
 import DatePickerContainer from "./features/date/DatePickerContainer";
 import AppLayout from "./ui/AppLayout";
 
 const App = () => {
   return (
-    <AppLayout>
-      <DatePickerContainer />
-    </AppLayout>
+    <DarkModeProvier>
+      <AppLayout>
+        <DatePickerContainer />
+      </AppLayout>
+    </DarkModeProvier>
   );
 };
 
