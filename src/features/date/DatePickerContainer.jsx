@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import jalaali from "jalaali-js";
@@ -12,10 +12,30 @@ import Modal from "../../ui/Modal";
 import { MdOutlineCalculate } from "react-icons/md";
 import getDaysInPersianMonth from "../../utils/getDaysInPersianMonth";
 
+// Initial state
+const initialState = {
+  date: new DateObject({ calendar: persian }),
+  countdown: 0,
+  open: false,
+};
+
+// Reducer function
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_DATE":
+      return { ...state, date: action.payload };
+    case "SET_COUNTDOWN":
+      return { ...state, countdown: state.countdown + 1 };
+    case "TOGGLE_MODAL":
+      return { ...state, open: !state.open };
+    default:
+      return state;
+  }
+}
+
 function DatePickerContainer() {
-  const [date, setDate] = useState(new DateObject({ calendar: persian }));
-  const [countdown, setCountdown] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { date, countdown, open } = state;
 
   // Convert Shamsi-date to Gregorian
   const {
@@ -29,7 +49,6 @@ function DatePickerContainer() {
   const birth = new Date(`${gDateYear}-${gDateMonth}-${gDateDay} 00:00:00`);
   let nextBirth = new Date(now.getFullYear(), gDateMonth - 1, gDateDay);
 
-  // Ensure the next birthday is in the future
   if (nextBirth <= now) {
     nextBirth = addYears(nextBirth, 1);
   }
@@ -41,7 +60,6 @@ function DatePickerContainer() {
   const nowJalaali = jalaali.toJalaali(now);
   const birthJalaali = jalaali.toJalaali(birth);
 
-  // Calculate months and days considering the Persian calendar specifics
   let ageInMonths = nowJalaali.jm - birthJalaali.jm;
   let ageInDays = nowJalaali.jd - birthJalaali.jd;
 
@@ -55,14 +73,15 @@ function DatePickerContainer() {
   }
 
   // Calculate remaining time until the next birthday
-  let monthsUntilNextBirthday = nextBirth.getMonth() - now.getMonth();
-  let daysUntilNextBirthday = nextBirth.getDate() - now.getDate();
+  const nextBirthJalaali = jalaali.toJalaali(nextBirth);
+  let monthsUntilNextBirthday = nextBirthJalaali.jm - nowJalaali.jm;
+  let daysUntilNextBirthday = nextBirthJalaali.jd - nowJalaali.jd;
 
   if (daysUntilNextBirthday < 0) {
     monthsUntilNextBirthday -= 1;
     daysUntilNextBirthday += getDaysInPersianMonth(
-      nextBirth.getMonth(),
-      nextBirth.getFullYear()
+      nowJalaali.jm + 1,
+      nowJalaali.jy
     );
   }
 
@@ -74,13 +93,16 @@ function DatePickerContainer() {
   const ageInMinutes = now.getMinutes();
   const ageInSeconds = now.getSeconds();
 
-  const hoursUntilNextBirthday = 24 - ageInHours;
-  const minutesUntilNextBirthday = 60 - ageInMinutes;
-  const secondsUntilNextBirthday = 60 - ageInSeconds;
+  const hoursUntilNextBirthday = 23 - ageInHours;
+  const minutesUntilNextBirthday = 59 - ageInMinutes;
+  const secondsUntilNextBirthday = 59 - ageInSeconds;
 
   // Updating countdown
   useEffect(() => {
-    const interval = setInterval(() => setCountdown(countdown + 1), 1000);
+    const interval = setInterval(
+      () => dispatch({ type: "SET_COUNTDOWN" }),
+      1000
+    );
     return () => clearInterval(interval);
   }, [countdown]);
 
@@ -91,14 +113,15 @@ function DatePickerContainer() {
           <div className="flex justify-center items-center">
             <DatePickerField
               date={date}
-              setDate={setDate}
+              setDate={(newDate) =>
+                dispatch({ type: "SET_DATE", payload: newDate })
+              }
               label="انتخاب تاریخ تولد"
             />
           </div>
-
           <button
             className="btn btn--primary text-[17px] w-full flex items-center justify-center gap-x-1"
-            onClick={() => setOpen(true)}
+            onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
           >
             <MdOutlineCalculate className="w-6 h-6" />
             محاسبه کن
@@ -106,7 +129,7 @@ function DatePickerContainer() {
           <Modal
             title="سن شما مطابق تقویم شمسی"
             open={open}
-            onClose={() => setOpen(false)}
+            onClose={() => dispatch({ type: "TOGGLE_MODAL" })}
           >
             <CalculateDate
               label="سن شما: "
