@@ -1,7 +1,12 @@
 import DatePickerContainer from "./features/date/DatePickerContainer";
+import AppLayout from "./ui/AppLayout";
 
 const App = () => {
-  return <DatePickerContainer />;
+  return (
+    <AppLayout>
+      <DatePickerContainer />
+    </AppLayout>
+  );
 };
 
 export default App;
