@@ -5,15 +5,7 @@ import jalaali from "jalaali-js";
 import { SiLivewire } from "react-icons/si";
 import { BsPatchQuestionFill } from "react-icons/bs";
 import { FaBirthdayCake } from "react-icons/fa";
-import {
-  differenceInYears,
-  differenceInMonths,
-  differenceInDays,
-  differenceInHours,
-  differenceInMinutes,
-  differenceInSeconds,
-  addYears,
-} from "date-fns";
+import { differenceInYears, addYears } from "date-fns";
 import CalculateDate from "./CalculateDate";
 import DatePickerField from "./DatePickerField";
 import Modal from "../../ui/Modal";
@@ -43,20 +35,47 @@ function DatePickerContainer() {
 
   // Calculate age
   const ageInYears = differenceInYears(now, birth);
-  const ageInMonths = differenceInMonths(now, birth) % 12;
-  const ageInDays = differenceInDays(now, addYears(birth, ageInYears)) % 30;
-  const ageInHours = differenceInHours(now, addYears(birth, ageInYears)) % 24;
-  const ageInMinutes =
-    differenceInMinutes(now, addYears(birth, ageInYears)) % 60;
-  const ageInSeconds =
-    differenceInSeconds(now, addYears(birth, ageInYears)) % 60;
 
-  // Calculate the countdown to the next birthday
-  const monthsUntilNextBirthday = differenceInMonths(nextBirth, now) % 12;
-  const daysUntilNextBirthday = differenceInDays(nextBirth, now) % 30;
-  const hoursUntilNextBirthday = differenceInHours(nextBirth, now) % 24;
-  const minutesUntilNextBirthday = differenceInMinutes(nextBirth, now) % 60;
-  const secondsUntilNextBirthday = differenceInSeconds(nextBirth, now) % 60;
+  // Convert current date and birth date to Jalaali
+  const nowJalaali = jalaali.toJalaali(now);
+  const birthJalaali = jalaali.toJalaali(birth);
+
+  // Calculate months and days considering the Persian calendar specifics
+  let ageInMonths = nowJalaali.jm - birthJalaali.jm;
+  let ageInDays = nowJalaali.jd - birthJalaali.jd;
+
+  if (ageInDays < 0) {
+    ageInMonths -= 1;
+    ageInDays += getDaysInPersianMonth(nowJalaali.jm - 1, nowJalaali.jy);
+  }
+
+  if (ageInMonths < 0) {
+    ageInMonths += 12;
+  }
+
+  // Calculate remaining time until the next birthday
+  let monthsUntilNextBirthday = nextBirth.getMonth() - now.getMonth();
+  let daysUntilNextBirthday = nextBirth.getDate() - now.getDate();
+
+  if (daysUntilNextBirthday < 0) {
+    monthsUntilNextBirthday -= 1;
+    daysUntilNextBirthday += getDaysInPersianMonth(
+      nextBirth.getMonth(),
+      nextBirth.getFullYear()
+    );
+  }
+
+  if (monthsUntilNextBirthday < 0) {
+    monthsUntilNextBirthday += 12;
+  }
+
+  const ageInHours = now.getHours();
+  const ageInMinutes = now.getMinutes();
+  const ageInSeconds = now.getSeconds();
+
+  const hoursUntilNextBirthday = 24 - ageInHours;
+  const minutesUntilNextBirthday = 60 - ageInMinutes;
+  const secondsUntilNextBirthday = 60 - ageInSeconds;
 
   // Updating countdown
   useEffect(() => {
@@ -125,3 +144,14 @@ function DatePickerContainer() {
 }
 
 export default DatePickerContainer;
+
+// Utility function to get the number of days in a Persian month
+function getDaysInPersianMonth(month, year) {
+  // Handle leap year logic for the last month (Esfand)
+  if (month === 12) {
+    return jalaali.isLeapJalaaliYear(year) ? 30 : 29;
+  }
+
+  // First 6 months have 31 days, the rest have 30 days
+  return month <= 6 ? 31 : 30;
+}
