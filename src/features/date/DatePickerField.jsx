@@ -1,10 +1,11 @@
-import DatePicker from "react-multi-date-picker";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 import { motion } from "framer-motion";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { MdDateRange } from "react-icons/md";
 
 const DatePickerField = ({ label, date, setDate }) => {
+  const maxDate = new DateObject({ date: new Date(), calendar: persian });
   return (
     <div className="flex flex-col justify-center items-center">
       <motion.h1
@@ -26,6 +27,7 @@ const DatePickerField = ({ label, date, setDate }) => {
         format="YYYY/MM/DD"
         calendar={persian}
         locale={persian_fa}
+        maxDate={maxDate}
       />
     </div>
   );
