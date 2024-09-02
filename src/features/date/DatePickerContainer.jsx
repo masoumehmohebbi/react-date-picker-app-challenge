@@ -17,10 +17,12 @@ import {
 } from "date-fns";
 import CalculateDate from "./CalculateDate";
 import DatePickerField from "./DatePickerField";
+import Modal from "../../ui/Modal";
 
 function DatePickerContainer() {
   const [date, setDate] = useState(new DateObject({ calendar: persian }));
   const [countdown, setCountdown] = useState(0);
+  const [open, setOpen] = useState(false);
 
   // Convert Shamsi-date to Gregorian
   const {
@@ -64,7 +66,7 @@ function DatePickerContainer() {
 
   return (
     <div className="bg-purple-200 min-h-screen sm:pt-5 flex flex-col text-slate-800">
-      <div className="flex-1 border border-purple-300 container sm:max-w-screen-sm mx-auto mb-5 bg-white p-6 rounded-md shadow-xl shadow-purple-400">
+      <div className="flex-1 border border-purple-300 container sm:max-w-screen-sm mb-5 bg-white p-6 rounded-md shadow-xl shadow-purple-400">
         <div className="flex justify-center items-center">
           <DatePickerField
             date={date}
@@ -73,35 +75,47 @@ function DatePickerContainer() {
           />
         </div>
 
-        <CalculateDate
-          label="سن شما: "
-          icon={<SiLivewire className="text-green-700 w-5 h-5" />}
+        <button
+          className="btn btn--primary w-full"
+          onClick={() => setOpen(true)}
         >
-          <div>
-            {ageInYears} سال و {ageInMonths} ماه و {ageInDays} روز و{" "}
-            {ageInHours} ساعت و {ageInMinutes} دقیقه و {ageInSeconds} ثانیه
-          </div>
-        </CalculateDate>
+          محاسبه
+        </button>
+        <Modal
+          title="سن شما مطابق تقویم شمسی"
+          open={open}
+          onClose={() => setOpen(false)}
+        >
+          <CalculateDate
+            label="سن شما: "
+            icon={<SiLivewire className="text-green-700 w-5 h-5" />}
+          >
+            <div>
+              {ageInYears} سال و {ageInMonths} ماه و {ageInDays} روز و{" "}
+              {ageInHours} ساعت و {ageInMinutes} دقیقه و {ageInSeconds} ثانیه
+            </div>
+          </CalculateDate>
 
-        <CalculateDate
-          label="تاریخ تولد کاربر به میلادی: "
-          icon={<FaBirthdayCake className="text-pink-700 w-5 h-5" />}
-        >
-          <div>
-            {gDateYear}/{gDateMonth}/{gDateDay}
-          </div>
-        </CalculateDate>
+          <CalculateDate
+            label="تاریخ تولد کاربر به میلادی: "
+            icon={<FaBirthdayCake className="text-pink-700 w-5 h-5" />}
+          >
+            <div>
+              {gDateYear}/{gDateMonth}/{gDateDay}
+            </div>
+          </CalculateDate>
 
-        <CalculateDate
-          label="تا تولد بعدی چقدر مونده؟ : "
-          icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700" />}
-        >
-          <div dir="rtl">
-            {monthsUntilNextBirthday} ماه و {daysUntilNextBirthday} روز و{" "}
-            {hoursUntilNextBirthday} ساعت و {minutesUntilNextBirthday} دقیقه و{" "}
-            {secondsUntilNextBirthday} ثانیه
-          </div>
-        </CalculateDate>
+          <CalculateDate
+            label="تا تولد بعدی چقدر مونده؟ : "
+            icon={<BsPatchQuestionFill className="w-5 h-5 text-blue-700" />}
+          >
+            <div dir="rtl">
+              {monthsUntilNextBirthday} ماه و {daysUntilNextBirthday} روز و{" "}
+              {hoursUntilNextBirthday} ساعت و {minutesUntilNextBirthday} دقیقه و{" "}
+              {secondsUntilNextBirthday} ثانیه
+            </div>
+          </CalculateDate>
+        </Modal>
       </div>
       <Footer />
     </div>
