@@ -2,9 +2,25 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 import { motion } from "framer-motion";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import { toast } from "react-hot-toast";
+import { useDisabledBtn } from "../../context/DisableBtnContext";
 
 const DatePickerField = ({ label, date, setDate }) => {
   const maxDate = new DateObject({ date: new Date(), calendar: persian });
+  const { isDisbled, setIsDisabled } = useDisabledBtn();
+
+  const handleDateChange = (date) => {
+    if (!date) {
+      toast.error("انتخاب تمامی فیلدها الزامیست!");
+      setIsDisabled(true);
+    } else {
+      setDate(date);
+      setIsDisabled(false);
+    }
+  };
+
+  console.log(isDisbled);
+
   return (
     <div className="flex items-center justify-center gap-x-5 mb-16">
       <motion.h1
@@ -21,7 +37,8 @@ const DatePickerField = ({ label, date, setDate }) => {
         inputClass="textField__input bg-primary-200 group-hover:bg-primary-300 text-lg"
         calenderPosition="bottom-center"
         value={date}
-        onChange={(date) => setDate(date)}
+        // onChange={(date) => setDate(date)}
+        onChange={handleDateChange}
         format="YYYY/MM/DD"
         calendar={persian}
         locale={persian_fa}

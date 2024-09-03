@@ -89,7 +89,14 @@ body {
   padding: 0;
   margin: 0;
 }
-
+button:disabled {
+  cursor: not-allowed;
+  background-color: gray;
+}
+button:disabled:hover {
+  cursor: not-allowed;
+  background-color: gray;
+}
 /* ----------------------------- style scrollbar ---------------------------- */
 
 /* Firefox */

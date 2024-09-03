@@ -11,6 +11,7 @@ import DatePickerField from "./DatePickerField";
 import Modal from "../../ui/Modal";
 import { MdOutlineCalculate } from "react-icons/md";
 import getDaysInPersianMonth from "../../utils/getDaysInPersianMonth";
+import { useDisabledBtn } from "../../context/DisableBtnContext";
 
 // Initial state
 const initialState = {
@@ -36,19 +37,21 @@ function reducer(state, action) {
 function DatePickerContainer() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { date, countdown, open } = state;
+  const { isDisbled } = useDisabledBtn();
 
   // Convert Shamsi-date to Gregorian
   const {
     gy: gDateYear,
     gm: gDateMonth,
     gd: gDateDay,
-  } = jalaali.toGregorian(date.year, date.month.number, date.day);
+  } = jalaali.toGregorian(date?.year, date?.month?.number, date?.day);
 
   // Get current date and birthday in Gregorian format
   const now = new Date();
   const birth = new Date(`${gDateYear}-${gDateMonth}-${gDateDay} 00:00:00`);
   let nextBirth = new Date(now.getFullYear(), gDateMonth - 1, gDateDay);
 
+  // addYears & diffrenceInYears => date-fns
   if (nextBirth <= now) {
     nextBirth = addYears(nextBirth, 1);
   }
@@ -68,6 +71,8 @@ function DatePickerContainer() {
     ageInDays += getDaysInPersianMonth(nowJalaali.jm - 1, nowJalaali.jy);
   }
 
+  // 2 year - 0 month - 1 days -> 2 year - 0 month - 0 days -> 1 year - 12 month - 30 days
+  // 11 month - 29 days - 23 hr - 59 min ...
   if (ageInMonths < 0) {
     ageInMonths += 12;
   }
@@ -89,10 +94,12 @@ function DatePickerContainer() {
     monthsUntilNextBirthday += 12;
   }
 
+  // Our age increase in every hr|min|sec
   const ageInHours = now.getHours();
   const ageInMinutes = now.getMinutes();
   const ageInSeconds = now.getSeconds();
 
+  // how many times to next day?  23 - nowHr
   const hoursUntilNextBirthday = 23 - ageInHours;
   const minutesUntilNextBirthday = 59 - ageInMinutes;
   const secondsUntilNextBirthday = 59 - ageInSeconds;
@@ -122,6 +129,7 @@ function DatePickerContainer() {
           <button
             className="btn btn--primary text-[17px] w-full flex items-center justify-center gap-x-1"
             onClick={() => dispatch({ type: "TOGGLE_MODAL" })}
+            disabled={isDisbled}
           >
             <MdOutlineCalculate className="w-6 h-6" />
             محاسبه کن
