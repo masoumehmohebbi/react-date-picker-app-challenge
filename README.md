@@ -34,7 +34,7 @@ git clone https://github.com/masoumehmohebbi/react-date-picker-app-challenge
 npm i
 ```
 
-<p>4. Finally, run the <code>dev</code> script to start the dev server:</p>
+<p>3. Finally, run the <code>dev</code> script to start the dev server:</p>
 
 ```
 npm run dev
